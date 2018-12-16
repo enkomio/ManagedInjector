@@ -20,6 +20,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssemblyWithDependency", "E
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsFormHelloWorld", "Examples\WindowsFormHelloWorld\WindowsFormHelloWorld.csproj", "{7FC1759D-6878-421E-AF2E-41094E7C984D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleProgram", "Examples\ConsoleProgram\ConsoleProgram.csproj", "{1B22270A-A1EE-4488-9AE0-C261B1C5F025}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,6 +44,10 @@ Global
 		{7FC1759D-6878-421E-AF2E-41094E7C984D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7FC1759D-6878-421E-AF2E-41094E7C984D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7FC1759D-6878-421E-AF2E-41094E7C984D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B22270A-A1EE-4488-9AE0-C261B1C5F025}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B22270A-A1EE-4488-9AE0-C261B1C5F025}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B22270A-A1EE-4488-9AE0-C261B1C5F025}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B22270A-A1EE-4488-9AE0-C261B1C5F025}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -50,6 +56,7 @@ Global
 		{9B8B41AF-756E-49D8-BA48-914447E1802D} = {4E58D7CE-0C9E-4AB4-A449-D3FBDA16B732}
 		{65151EFE-71DD-48AF-A6DD-B1B39C0CEBCA} = {4E58D7CE-0C9E-4AB4-A449-D3FBDA16B732}
 		{7FC1759D-6878-421E-AF2E-41094E7C984D} = {4E58D7CE-0C9E-4AB4-A449-D3FBDA16B732}
+		{1B22270A-A1EE-4488-9AE0-C261B1C5F025} = {4E58D7CE-0C9E-4AB4-A449-D3FBDA16B732}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {050BA54E-C98C-4AC4-8E70-A51CBA300720}

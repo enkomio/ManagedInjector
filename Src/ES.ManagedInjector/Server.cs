@@ -90,23 +90,30 @@ namespace ES.ManagedInjector
             return exit;
         }
 
+        private Object CretaeType(Type type)
+        {
+            Object obj = null;
+            if (type == typeof(String))
+            {
+                obj = String.Empty;
+            }
+            else if (type.IsArray)
+            {
+                obj = Array.CreateInstance(type, 0);
+            }
+            else
+            {
+                obj = Activator.CreateInstance(type);
+            }
+            return obj;
+        }
+
         private Object[] CreateArgumentArray(ParameterInfo[] parameters)
         {
             var parameterValues = new List<Object>();
             foreach (var parameter in parameters)
             {
-                if (parameter.ParameterType.IsPrimitive)
-                {
-                    parameterValues.Add(String.Empty);
-                }
-                else if (parameter.ParameterType.IsArray)
-                {
-                    parameterValues.Add(Array.CreateInstance(parameter.ParameterType, 0));
-                }
-                else
-                {
-                    parameterValues.Add(Activator.CreateInstance(parameter.ParameterType));
-                }
+                parameterValues.Add(CretaeType(parameter.ParameterType));
             }
             return parameterValues.ToArray();
         }
@@ -139,7 +146,7 @@ namespace ES.ManagedInjector
                     _lastError = InjectionResult.ErrorDuringInvocation;
                 }
             }
-            catch
+            catch (Exception e)
             {
                 _lastError = InjectionResult.ErrorDuringInvocation;
             }

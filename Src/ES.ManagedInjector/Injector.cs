@@ -14,7 +14,10 @@ namespace ES.ManagedInjector
         private readonly Assembly _assembly = null;
         private readonly List<Byte[]> _dependency = new List<Byte[]>();
         private Process _process = null;
-        private IntPtr _processHandle = IntPtr.Zero;        
+        private IntPtr _processHandle = IntPtr.Zero;
+
+        public Injector(Int32 pid, Byte[] assemblyContent) : this(pid, assemblyContent, null)
+        { }
 
         public Injector(Int32 pid, Byte[] assemblyContent, String methodName)
         {
@@ -22,6 +25,9 @@ namespace ES.ManagedInjector
             _assemblyContent = assemblyContent;
             _methodName = methodName;
         }
+
+        public Injector(Int32 pid, Assembly assembly) : this(pid, assembly, null)
+        { }
 
         public Injector(Int32 pid, Assembly assembly, String methodName)
         {            
