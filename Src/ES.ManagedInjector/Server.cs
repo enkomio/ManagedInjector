@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO.Pipes;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -101,9 +102,17 @@ namespace ES.ManagedInjector
             {
                 obj = Array.CreateInstance(type.GetElementType(), 0);
             }
-            else
+            else if (!type.IsAbstract)
             {
-                obj = Activator.CreateInstance(type);
+                try
+                {
+                    obj = Activator.CreateInstance(type);
+                }
+                catch
+                {
+                    // unable to create the given object add an uninitialized object
+                    obj = FormatterServices.GetUninitializedObject(type);
+                }
             }
             return obj;
         }
