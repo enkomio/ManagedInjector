@@ -16,6 +16,9 @@ If the above pre-conditions are satisfiedm you can inject an assembly and invoke
 
 For practical examples see the <a href="https://github.com/enkomio/ManagedInjector/blob/master/Src/Examples/TestRunner/Program.cs">TestRunner project</a>.
 
+## Build
+TBD
+
 ## Versioning
 
 We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/enkomio/ManagedInjector/tags). 
