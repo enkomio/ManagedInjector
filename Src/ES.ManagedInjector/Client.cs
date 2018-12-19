@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.IO.Pipes;
 using System.Reflection;
@@ -69,6 +70,22 @@ namespace ES.ManagedInjector
             return assembly.EntryPoint.MetadataToken;
         }
 
+        private Int32 GetAssemblyDefaultMethodToken(Assembly assembly)
+        {
+            var token = 0;
+            var methodToInvoke = 
+                assembly.GetTypes()
+                .SelectMany(type => type.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
+                .FirstOrDefault(method => method.IsStatic && method.Name.Equals("Inject", StringComparison.OrdinalIgnoreCase));
+
+            if (methodToInvoke != null)
+            {
+                token = methodToInvoke.MetadataToken;
+            }
+
+            return token;
+        }
+
         private Int32 GetSpecificMethodToken(Assembly assembly, String methodName)
         {
             var methodToken = 0;
@@ -95,7 +112,11 @@ namespace ES.ManagedInjector
             var methodToken = 0;
             if (String.IsNullOrWhiteSpace(methodName))
             {
-                methodToken = GetAssemblyEntryPointToken(assembly);
+                methodToken = GetAssemblyDefaultMethodToken(assembly);
+                if (methodToken == 0)
+                {
+                    methodToken = GetAssemblyEntryPointToken(assembly);
+                }                    
             }
             else
             {

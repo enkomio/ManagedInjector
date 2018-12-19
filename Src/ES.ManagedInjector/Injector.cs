@@ -98,7 +98,9 @@ namespace ES.ManagedInjector
                         }
                     }
                 }
-                catch { }
+                catch {
+                    result = InjectionResult.InjectionFailed;
+                }
             }
 
             return result;

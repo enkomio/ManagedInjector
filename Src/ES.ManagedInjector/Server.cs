@@ -90,7 +90,7 @@ namespace ES.ManagedInjector
             return exit;
         }
 
-        private Object CretaeType(Type type)
+        private Object CreateType(Type type)
         {
             Object obj = null;
             if (type == typeof(String))
@@ -99,7 +99,7 @@ namespace ES.ManagedInjector
             }
             else if (type.IsArray)
             {
-                obj = Array.CreateInstance(type, 0);
+                obj = Array.CreateInstance(type.GetElementType(), 0);
             }
             else
             {
@@ -113,7 +113,7 @@ namespace ES.ManagedInjector
             var parameterValues = new List<Object>();
             foreach (var parameter in parameters)
             {
-                parameterValues.Add(CretaeType(parameter.ParameterType));
+                parameterValues.Add(CreateType(parameter.ParameterType));
             }
             return parameterValues.ToArray();
         }
@@ -135,7 +135,7 @@ namespace ES.ManagedInjector
                         thisObj = Activator.CreateInstance(method.DeclaringType, constructorArguments);
                     }
                 }
-                // invoke the method           
+                // invoke the method                           
                 var task = Task.Factory.StartNew(() => method.Invoke(thisObj, arguments), TaskCreationOptions.LongRunning);
 
                 // wait one second to grab early execution exceptions
@@ -146,7 +146,7 @@ namespace ES.ManagedInjector
                     _lastError = InjectionResult.ErrorDuringInvocation;
                 }
             }
-            catch (Exception e)
+            catch
             {
                 _lastError = InjectionResult.ErrorDuringInvocation;
             }

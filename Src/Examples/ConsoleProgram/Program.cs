@@ -11,7 +11,7 @@ namespace ConsoleProgram
     {
         public static void Main(string[] args)
         {
-            File.AppendAllText("log.txt", "\r\nCur dir: " + Directory.GetCurrentDirectory());
+            File.AppendAllText("log_ConsoleProgram.txt", "\r\nCur dir: " + Directory.GetCurrentDirectory());
         }
     }
 }

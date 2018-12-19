@@ -37,7 +37,7 @@ namespace TestRunner
         {
             var assemblyFile = Path.GetFullPath(Path.Combine("..", "..", "..", "WindowsFormHelloWorld", "bin", "Debug", "WindowsFormHelloWorld.exe"));
             var assemblyExecute = Assembly.LoadFile(assemblyFile);
-
+            
             var assemblyDir = Path.GetDirectoryName(assemblyExecute.Location);
             Directory.SetCurrentDirectory(assemblyDir);
 
@@ -48,14 +48,36 @@ namespace TestRunner
             var injector = new Injector(proc.Id, new ConsoleProgram.Program().GetType().Assembly);
             var injectionResult = injector.Inject();
             proc.Kill();
+
+            Contract.Assert(injectionResult == InjectionResult.Success);
+            Console.WriteLine("Injection successful");
+        }
+
+        private static void InjectAssemblyWithDefaultInjectMethodSignature()
+        {
+            var assemblyFile = Path.GetFullPath(Path.Combine("..", "..", "..", "WindowsFormHelloWorld", "bin", "Debug", "WindowsFormHelloWorld.exe"));
+            var assemblyExecute = Assembly.LoadFile(assemblyFile);
+
+            var assemblyDir = Path.GetDirectoryName(assemblyExecute.Location);
+            Directory.SetCurrentDirectory(assemblyDir);
+
+            var procInfo = new ProcessStartInfo(assemblyExecute.Location) { WorkingDirectory = assemblyDir };
+            var proc = Process.Start(procInfo);
+            Thread.Sleep(1000);
+
+            var injector = new Injector(proc.Id, typeof(AssemblyWithDefaultMethodName.Main).Assembly);
+            var injectionResult = injector.Inject();
+            proc.Kill();
+
             Contract.Assert(injectionResult == InjectionResult.Success);
             Console.WriteLine("Injection successful");
         }
 
         static void Main(string[] args)
         {
-            //InjectDllWithDependency();
+            InjectDllWithDependency();
             InjectConsoleWithEntryPoint();
+            InjectAssemblyWithDefaultInjectMethodSignature();
         }
     }
 }
