@@ -11,7 +11,7 @@ When you want to inject an assembly in a remote project you have to consider the
 If the above pre-conditions are satisfiedm you can inject an assembly and invoke an activation method. There are three possibilities to invoke the activation method:
 
 * You have to specify the full method name to invoke (eg. _this.is.my.namespace.class.method_)
-* You can inject an executable that defines an EntryPoint method to execute
+* You can inject an executable that defines an _EntryPoint) method to execute
 * You can define a method with the following signatue: _<public|private> static void Inject()_
 
 For practical examples see the <a href="https://github.com/enkomio/ManagedInjector/blob/master/Src/Examples/TestRunner/Program.cs">TestRunner project</a>.
