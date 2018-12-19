@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace ES.ManagedInjector
 {
-    public static class Remote
+    internal static class Remote
     {
         public static IntPtr hookHandle = IntPtr.Zero;
 

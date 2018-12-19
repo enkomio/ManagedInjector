@@ -16,9 +16,15 @@ namespace ES.ManagedInjector
         private Process _process = null;
         private IntPtr _processHandle = IntPtr.Zero;
 
+        /// <summary>Inject the given assembly bytes into the process identified by the pid. You have to specify manually
+        /// not standard dependencies since in this case the Assembly location is not specified.</summary>
         public Injector(Int32 pid, Byte[] assemblyContent) : this(pid, assemblyContent, null)
         { }
 
+        /// <summary>Inject the given assembly bytes into the process identified by the pid. 
+        /// You have to specify manually not standard dependencies since in this case the Assembly 
+        /// location is not specified. The invoked method is the one specified.
+        /// </summary>
         public Injector(Int32 pid, Byte[] assemblyContent, String methodName)
         {
             _pid = pid;
@@ -26,9 +32,13 @@ namespace ES.ManagedInjector
             _methodName = methodName;
         }
 
+        /// <summary> Inject the given assembly into the process identified by the pid. The Assembly must
+        /// exists on the filesystem.</summary>
         public Injector(Int32 pid, Assembly assembly) : this(pid, assembly, null)
         { }
 
+        /// <summary> Inject the given assembly into the process identified by the pid. The Assembly must
+        /// exists on the filesystem. The invoked method is the one specified.</summary>
         public Injector(Int32 pid, Assembly assembly, String methodName)
         {            
             if (String.IsNullOrWhiteSpace(assembly.Location))
@@ -47,6 +57,10 @@ namespace ES.ManagedInjector
             ResolveDependencies();
         }
         
+        /// <summary>
+        /// Execute the injection of the specified assembly
+        /// </summary>
+        /// <returns></returns>
         public InjectionResult Inject()
         {
             var result = InjectionResult.UnknownError;
@@ -106,17 +120,32 @@ namespace ES.ManagedInjector
             return result;
         }
 
-        private void AddDependency(Assembly assembly)
+        /// <summary>
+        /// this method allows to specified additional Assembly that must be loaded into the remote
+        /// process before to execute the injected Assembly. It is usefull to add non standard dependencies.
+        /// </summary>
+        /// <param name="assembly"></param>
+        public void AddDependency(Assembly assembly)
         {
             if (String.IsNullOrWhiteSpace(assembly.Location))
             {
                 var errorMsg =
-                    "Unable to inject an Assembly whih doesn't have a location." +
+                    "Unable to inject an Assembly that doesn't have a location." +
                     "Use the contructor that take the a byte buffer to inject a memory only assembly.";
                 throw new ApplicationException(errorMsg);
             }
 
-            _dependency.Add(File.ReadAllBytes(assembly.Location));
+            AddDependency(File.ReadAllBytes(assembly.Location));
+        }
+
+        /// <summary>
+        /// this method allows to specified additional Assembly that must be loaded into the remote
+        /// process before to execute the injected Assembly. It is usefull to add non standard dependencies.
+        /// </summary>
+        /// <param name="assembly"></param>
+        public void AddDependency(Byte[] assemblyContent)
+        {
+            _dependency.Add(assemblyContent);
         }
 
         private void ResolveDependencies()
