@@ -34,10 +34,10 @@ Let's consider the following code:
     
     namespace InjectedAssembly
     {
-	       public class Main
-	       {
+        public class Main
+        {
             // we use a default injection method name in order to execute our code in the remote process
-		          private static void Inject()
+            private static void Inject()
             {
                 Console.WriteLine("Hello world from the injected process!");
             }
