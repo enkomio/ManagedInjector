@@ -11,15 +11,17 @@ namespace ES.ManagedInjector
         private readonly NamedPipeClientStream _client = new NamedPipeClientStream(".", Constants.NamedPipeCode.ToString("X"), PipeDirection.InOut);
         private readonly PipeChanell _pipeChanell = null;
         private readonly List<Byte[]> _dependencies = null;
+        private readonly Dictionary<String, Byte[]> _files = null;
         private readonly Byte[] _assemblyContent;
         private readonly String _methodName = null;
         private InjectionResult _lastError = InjectionResult.Success;        
         
-        public Client(Byte[] assemblyContent, String methodName, List<Byte[]> dependencies)
+        public Client(Byte[] assemblyContent, String methodName, List<Byte[]> dependencies, Dictionary<String, Byte[]> files)
         {
             _assemblyContent = assemblyContent;
             _methodName = methodName;
             _dependencies = dependencies;
+            _files = files;
             _pipeChanell = new PipeChanell(_client);
         }
 
@@ -34,6 +36,7 @@ namespace ES.ManagedInjector
                     var invocationResult = 
                         _pipeChanell.SendMessage(Constants.Ping) &&
                         SendDependencies() &&
+                        SendFiles() &&
                         SendToken() &&
                         SendAssembly() &&                        
                         _pipeChanell.SendMessage(Constants.Run);
@@ -123,6 +126,17 @@ namespace ES.ManagedInjector
                 methodToken = GetSpecificMethodToken(assembly, methodName);
             }
             return methodToken;
+        }
+
+        private Boolean SendFiles()
+        {
+            var result = true;
+            foreach (var kv in _files)
+            {
+                var value = String.Format("{0}|{1}{2}", kv.Key.Length, kv.Key, Convert.ToBase64String(kv.Value));
+                result = result && _pipeChanell.SendMessage(Constants.File, value);
+            }
+            return result;
         }
 
         private Boolean SendDependencies()

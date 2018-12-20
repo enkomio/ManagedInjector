@@ -13,6 +13,7 @@ namespace ES.ManagedInjector
         private readonly String _methodName = null;
         private readonly Assembly _assembly = null;
         private readonly List<Byte[]> _dependency = new List<Byte[]>();
+        private readonly Dictionary<String, Byte[]> _files = new Dictionary<String, Byte[]>();
         private Process _process = null;
         private IntPtr _processHandle = IntPtr.Zero;
 
@@ -148,6 +149,29 @@ namespace ES.ManagedInjector
             _dependency.Add(assemblyContent);
         }
 
+        /// <summary>
+        /// Copy the content of the given filename to the folder of the injected process
+        /// </summary>
+        /// <param name="filename"></param>
+        public void AddFile(String filename, Byte[] content)
+        {
+            var basename = Path.GetFileName(filename);
+            if (!_files.ContainsKey(basename))
+            {
+                _files.Add(basename, content);
+            }            
+        }
+
+        /// <summary>
+        /// Copy the content of the given filename to the folder of the injected process. In this case, the
+        /// file must exists on the filesystem.
+        /// </summary>
+        /// <param name="filename"></param>
+        public void AddFile(String filename)
+        {
+            AddFile(filename, File.ReadAllBytes(filename));
+        }
+
         private void ResolveDependencies()
         {
             if (_assembly != null)
@@ -174,7 +198,7 @@ namespace ES.ManagedInjector
 
         private InjectionResult ActivateAssembly()
         {
-            var client = new Client(_assemblyContent, _methodName, _dependency);
+            var client = new Client(_assemblyContent, _methodName, _dependency, _files);
             client.ActivateAssembly();
             return client.GetLastError();
         }

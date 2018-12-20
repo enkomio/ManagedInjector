@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.IO.Pipes;
 using System.Linq;
 using System.Reflection;
@@ -73,6 +74,22 @@ namespace ES.ManagedInjector
                 catch
                 {
                     _lastError = InjectionResult.InvalidAssemblyDependencyBuffer;
+                }
+            }
+            else if (msgType.Equals(Constants.File, StringComparison.OrdinalIgnoreCase))
+            {
+                try
+                {
+                    var data = msg.GetData();
+                    var indexOfPipe = data.IndexOf("|");
+                    var filenameLength = Int32.Parse(data.Substring(0, indexOfPipe));
+                    var filename = data.Substring(indexOfPipe + 1, filenameLength);
+                    var fileContent = Convert.FromBase64String(data.Substring(indexOfPipe + 1 + filenameLength));
+                    File.WriteAllBytes(filename, fileContent);
+                }
+                catch
+                {
+                    _lastError = InjectionResult.InvalidFileBuffer;
                 }
             }
             else if (msgType.Equals(Constants.Run, StringComparison.OrdinalIgnoreCase))
