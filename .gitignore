@@ -1,4 +1,10 @@
+#################
+## Build scripts
+#################
 paket.lock
+build.fsx.lock
+fake/
+.paket/
 
 #################
 ## Eclipse
