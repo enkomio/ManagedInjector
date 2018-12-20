@@ -1,5 +1,5 @@
 # Managed Injector
-This project implements a .NET Assembly injection library. The method used to inject the Assembly is by using the _SetWindowsHookEx_ method.
+This project implements a .NET Assembly injection library.
 
 ## Download
  - [Source code][1]
