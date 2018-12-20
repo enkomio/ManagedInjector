@@ -26,6 +26,31 @@ If the injected assembly has any dependencies on not standard .NET Assembly, you
 ### Adding external files
 If the injected assembly needs to load some external file in order to work correctly (like a configuration file) you can specify them with the ``AddFile`` method. This method will copy the specified file in the working directory of the injected process.
 
+### Example
+
+Let's consider the following code:
+    
+    using System;
+    
+    namespace InjectedAssembly
+    {
+	       public class Main
+	       {
+            // we use a default injection method name in order to execute our code in the remote process
+		          private static void Inject()
+            {
+                Console.WriteLine("Hello world from the injected process!");
+            }
+        }
+    }
+    
+in order to inject the Assembly generated from the above code it is enough to use the following code:
+
+    var process = Process.GetProcessById(1234);
+    var injector = new Injector(process.Id, Assembly.LoadFile("AssemblyToInject.dll"));
+    var injectionResult = injector.Inject();
+
+
 ## Build
 _ManagedInjector_ is currently developed by using VisualStudio 2017 Community Edition (be sure to have the latest version installed). To build the source code be sure you have to:
 * install <a href="https://www.microsoft.com/net/download">.NET Core SDK</a>
