@@ -21,7 +21,10 @@ If the above pre-conditions are satisfiedm you can inject an assembly and invoke
 For practical examples see the <a href="https://github.com/enkomio/ManagedInjector/blob/master/Src/Examples/TestRunner/Program.cs">TestRunner project</a>.
 
 ## Build
-TBD
+_ManagedInjector_ is currently developed by using VisualStudio 2017 Community Edition (be sure to have the latest version installed). To build the source code be sure you have to:
+* install <a href="https://www.microsoft.com/net/download">.NET Core SDK</a>
+* clone the repository
+* run ``build.bat``
 
 ## Versioning
 
