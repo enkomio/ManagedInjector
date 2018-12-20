@@ -181,7 +181,6 @@ namespace ES.ManagedInjector
                     String.Empty :
                     Path.GetDirectoryName(_assembly.Location);
 
-
                 foreach(var assemblyName in _assembly.GetReferencedAssemblies())
                 {
                     var assembly = Assembly.Load(assemblyName);
