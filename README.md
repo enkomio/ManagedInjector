@@ -20,7 +20,7 @@ If the above pre-conditions are satisfiedm you can inject an assembly and invoke
 
 For practical examples see the <a href="https://github.com/enkomio/ManagedInjector/blob/master/Src/Examples/TestRunner/Program.cs">TestRunner project</a>.
 
-### Adding Assembly dependencies
+### Adding dependencies
 If the injected assembly has any dependencies on not standard .NET Assembly, you can add those dependencies with the ``AddDependency`` method.
 
 ### Adding external files
