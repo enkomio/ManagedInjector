@@ -45,8 +45,8 @@ Let's consider the following code:
     
 in order to inject the Assembly generated from the above code it is enough to use the following code:
 
-    var process = Process.GetProcessById(1234);
-    var injector = new Injector(process.Id, Assembly.LoadFile("AssemblyToInject.dll"));
+    var pid = 1234;
+    var injector = new Injector(pid, Assembly.LoadFile("AssemblyToInject.dll"));
     var injectionResult = injector.Inject();
 
 
