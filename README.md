@@ -1,5 +1,5 @@
 # Managed Injector
-This project implements a .NET Assembly injection library.
+This project implements a .NET Assembly injection library (it is inspired by the <a href="https://github.com/cplotts/snoopwpf">snoopwpf</a> project).
 
 ## Download
  - [Source code][1]
