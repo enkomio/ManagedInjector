@@ -108,40 +108,45 @@ namespace ES.ManagedInjector
             return exit;
         }
 
-        private Object CreateType(Type type)
+        private Object CreateType(ParameterInfo parameterInfo)
         {
             Object obj = null;
-            if (type == typeof(String))
+            if (parameterInfo.HasDefaultValue)
             {
-                obj = String.Empty;
+                // return the default value
+                obj = parameterInfo.DefaultValue;
             }
-            else if (type.IsArray)
+            else
             {
-                obj = Array.CreateInstance(type.GetElementType(), 0);
-            }
-            else if (!type.IsAbstract)
-            {
-                try
+                var type = parameterInfo.ParameterType;
+                if (type == typeof(String))
                 {
-                    obj = Activator.CreateInstance(type);
+                    obj = String.Empty;
                 }
-                catch
+                else if (type.IsArray)
                 {
-                    // unable to create the given object add an uninitialized object
-                    obj = FormatterServices.GetUninitializedObject(type);
+                    obj = Array.CreateInstance(type.GetElementType(), 0);
+                }
+                else if (!type.IsAbstract)
+                {
+                    try
+                    {
+                        obj = Activator.CreateInstance(type);
+                    }
+                    catch
+                    {
+                        // unable to create the given object add an uninitialized object
+                        obj = FormatterServices.GetUninitializedObject(type);
+                    }
                 }
             }
+            
             return obj;
         }
 
         private Object[] CreateArgumentArray(ParameterInfo[] parameters)
         {
-            var parameterValues = new List<Object>();
-            foreach (var parameter in parameters)
-            {
-                parameterValues.Add(CreateType(parameter.ParameterType));
-            }
-            return parameterValues.ToArray();
+            return parameters.Select(CreateType).ToArray();
         }
         
         private void InvokeMethod(MethodBase method)
