@@ -181,17 +181,31 @@ namespace ES.ManagedInjector
                     String.Empty :
                     Path.GetDirectoryName(_assembly.Location);
 
+                // change the current directory to be sure to load the referenced assemblies
+                var savedCurrentdirectory = Directory.GetCurrentDirectory();
+                if (!String.IsNullOrWhiteSpace(_assembly.Location))
+                {
+                    Directory.SetCurrentDirectory(Path.GetDirectoryName(_assembly.Location));
+                }
+
                 foreach(var assemblyName in _assembly.GetReferencedAssemblies())
                 {
-                    var assembly = Assembly.Load(assemblyName);
-                    if (!Utility.IsBclAssembly(assembly))
-                    {                        
-                        if (!String.IsNullOrWhiteSpace(assembly.Location))
+                    try
+                    {
+                        var assembly = Assembly.Load(assemblyName);
+                        if (!Utility.IsBclAssembly(assembly))
                         {
-                            _dependency.Add(File.ReadAllBytes(assembly.Location));
+                            if (!String.IsNullOrWhiteSpace(assembly.Location))
+                            {
+                                _dependency.Add(File.ReadAllBytes(assembly.Location));
+                            }
                         }
                     }
+                    catch { /* ignore exception */ }
                 }
+
+                // restore current directory
+                Directory.SetCurrentDirectory(savedCurrentdirectory);
             }
         }
 
