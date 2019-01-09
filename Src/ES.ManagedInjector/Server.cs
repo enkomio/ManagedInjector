@@ -17,6 +17,7 @@ namespace ES.ManagedInjector
         private readonly Dictionary<String, Assembly> _dependencies = new Dictionary<String, Assembly>();
 
         private InjectionResult _lastError = InjectionResult.Success;
+        private String _lastErrorMessage = String.Empty;
         private Int32 _metadataToken = 0;
         private Byte[] _assemblyBuffer = null;
 
@@ -35,7 +36,7 @@ namespace ES.ManagedInjector
             {
                 var msg = _pipeChanell.GetMessage();
                 completed = ProcessCommand(msg);
-                _pipeChanell.SendAck(_lastError);
+                _pipeChanell.SendAck(_lastError, _lastErrorMessage);
             }
 
             _server.Dispose();
@@ -43,8 +44,7 @@ namespace ES.ManagedInjector
 
         private Assembly ResolveAssembly(Object sender, ResolveEventArgs e)
         {
-            Assembly res;
-            _dependencies.TryGetValue(e.Name, out res);
+            _dependencies.TryGetValue(e.Name, out Assembly res);
             return res;
         }
 
@@ -214,8 +214,9 @@ namespace ES.ManagedInjector
                     _lastError = InjectionResult.MethodNotFound;
                 }
             }
-            catch {
+            catch (Exception e) {
                 _lastError = InjectionResult.InvalidAssemblyBuffer;
+                _lastErrorMessage = e.ToString();
             }
         }
     }

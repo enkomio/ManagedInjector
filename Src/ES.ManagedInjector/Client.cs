@@ -14,8 +14,9 @@ namespace ES.ManagedInjector
         private readonly Dictionary<String, Byte[]> _files = null;
         private readonly Byte[] _assemblyContent;
         private readonly String _methodName = null;
-        private InjectionResult _lastError = InjectionResult.Success;        
-        
+        private InjectionResult _lastError = InjectionResult.Success;
+        private String _lastErrorMessage = String.Empty;
+
         public Client(Byte[] assemblyContent, String methodName, List<Byte[]> dependencies, Dictionary<String, Byte[]> files)
         {
             _assemblyContent = assemblyContent;
@@ -60,11 +61,17 @@ namespace ES.ManagedInjector
             return _lastError;
         }
 
+        public String GetLastErrorMessage()
+        {
+            return _lastErrorMessage;
+        }
+
         private void SetLastError()
         {
             if (_lastError == InjectionResult.Success)
             {
                 _lastError = _pipeChanell.GetLastError();
+                _lastErrorMessage = _pipeChanell.GetLastErrorMessage();
             }
         }
 

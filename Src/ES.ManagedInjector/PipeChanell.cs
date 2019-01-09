@@ -8,6 +8,7 @@ namespace ES.ManagedInjector
         private readonly StreamReader _reader;
         private readonly StreamWriter _writer;
         private InjectionResult _lastError = InjectionResult.Success;
+        private String _lastErrorMessage = String.Empty;
 
         public PipeChanell(Stream stream)
         {
@@ -30,12 +31,19 @@ namespace ES.ManagedInjector
             return _lastError;
         }
 
+        public String GetLastErrorMessage()
+        {
+            return _lastErrorMessage;
+        }
+
         public Boolean SendMessage(PipeMessage msg)
         {
             var response = SendData(msg);
             if (!response.IsSuccess())
             {
-                _lastError = (InjectionResult)Int32.Parse(response.GetData());
+                var items = response.GetData().Split('|');
+                _lastError = (InjectionResult)Int32.Parse(items[0]);
+                _lastErrorMessage = items[1];
             }
             return response.IsSuccess();
         }
@@ -45,10 +53,11 @@ namespace ES.ManagedInjector
             return PipeMessage.Create(ReadData());
         }
         
-        public void SendAck(InjectionResult code)
+        public void SendAck(InjectionResult code, String message)
         {
+            var value = String.Format("{0}|{1}", code, message);
             var type = code == InjectionResult.Success ? Constants.Ok : Constants.Error;
-            var ackMsg = new PipeMessage(type, ((Int32)code).ToString());
+            var ackMsg = new PipeMessage(type, value);
             _writer.WriteLine(ackMsg.Serialize());
             _writer.Flush();
         }

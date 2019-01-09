@@ -16,6 +16,7 @@ namespace ES.ManagedInjector
         private readonly Dictionary<String, Byte[]> _files = new Dictionary<String, Byte[]>();
         private Process _process = null;
         private IntPtr _processHandle = IntPtr.Zero;
+        private String _lastErrorMessage = String.Empty;
 
         /// <summary>Inject the given assembly bytes into the process identified by the pid. You have to specify manually
         /// not standard dependencies since in this case the Assembly location is not specified.</summary>
@@ -207,6 +208,16 @@ namespace ES.ManagedInjector
                 // restore current directory
                 Directory.SetCurrentDirectory(savedCurrentdirectory);
             }
+        }
+
+        /// <summary>
+        /// Return a string which provides a description of the last raised error.
+        /// If no error was raised this string is empty.
+        /// </summary>
+        /// <returns>A textual description of the error</returns>
+        public String GetLastErrorMessage()
+        {
+            return _lastErrorMessage;
         }
 
         private InjectionResult ActivateAssembly()

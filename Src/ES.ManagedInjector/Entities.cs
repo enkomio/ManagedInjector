@@ -13,6 +13,11 @@ namespace ES.ManagedInjector
             _data = data;
         }
 
+        public override string ToString()
+        {
+            return String.Format("[{0}] {1}", _type, _data);
+        }
+
         public PipeMessage(String type) : this(type, String.Empty)
         { }
 
@@ -55,6 +60,7 @@ namespace ES.ManagedInjector
         // commands
         public static readonly String Ok = "OK";
         public static readonly String Error = "ERROR";
+        public static readonly String ErrorMessage = "ERRORMESSAGE";
         public static readonly String Ping = "PING";
         public static readonly String Token = "TOKEN"; 
         public static readonly String Assembly = "ASSEMBLY";
