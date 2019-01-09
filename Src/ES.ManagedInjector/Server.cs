@@ -71,9 +71,10 @@ namespace ES.ManagedInjector
                         _dependencies.Add(assembly.FullName, assembly);
                     }                    
                 }
-                catch
+                catch (Exception e)
                 {
                     _lastError = InjectionResult.InvalidAssemblyDependencyBuffer;
+                    _lastErrorMessage = e.ToString();
                 }
             }
             else if (msgType.Equals(Constants.File, StringComparison.OrdinalIgnoreCase))
@@ -87,9 +88,10 @@ namespace ES.ManagedInjector
                     var fileContent = Convert.FromBase64String(data.Substring(indexOfPipe + 1 + filenameLength));
                     File.WriteAllBytes(filename, fileContent);
                 }
-                catch
+                catch (Exception e)
                 {
                     _lastError = InjectionResult.InvalidFileBuffer;
+                    _lastErrorMessage = e.ToString();
                 }
             }
             else if (msgType.Equals(Constants.Run, StringComparison.OrdinalIgnoreCase))
@@ -175,6 +177,7 @@ namespace ES.ManagedInjector
                 if (task.Exception != null)
                 {
                     _lastError = InjectionResult.ErrorDuringInvocation;
+                    _lastErrorMessage = task.Exception.ToString();
                 }
             }
             catch
