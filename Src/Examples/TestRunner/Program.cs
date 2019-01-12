@@ -16,6 +16,12 @@ namespace TestRunner
     {
         private static void InjectDllWithDependency()
         {
+            // delete the dependency DLL
+            if (File.Exists("Newtonsoft.Json.dll"))
+            {
+                File.Delete("Newtonsoft.Json.dll");
+            }
+
             var assemblyFile = Path.GetFullPath(Path.Combine("..", "..", "..", "WindowsFormHelloWorld", "bin", "Debug", "WindowsFormHelloWorld.exe"));
             var assemblyExecute = Assembly.LoadFile(assemblyFile);
 
@@ -26,7 +32,10 @@ namespace TestRunner
             var proc = Process.Start(procInfo);
             Thread.Sleep(1000);
 
-            var injector = new Injector(proc.Id, typeof(AssemblyWithDependency.Main).Assembly, "AssemblyWithDependency.Main.Run");
+            var injectedAssemblyFile = Path.GetFullPath(Path.Combine("..", "..", "..", "AssemblyWithDependency", "bin", "Debug", "AssemblyWithDependency.dll"));
+            var injectedAssembly = Assembly.LoadFile(injectedAssemblyFile);
+
+            var injector = new Injector(proc.Id, injectedAssembly, "AssemblyWithDependency.Main.Run");
             var injectionResult = injector.Inject();
             proc.Kill();
             Contract.Assert(injectionResult == InjectionResult.Success);
@@ -94,11 +103,32 @@ namespace TestRunner
             Console.WriteLine("Injection successful");
         }
 
+        private static void InjectanAssemblyRaisingAnException()
+        {
+            var assemblyFile = Path.GetFullPath(Path.Combine("..", "..", "..", "WindowsFormHelloWorld", "bin", "Debug", "WindowsFormHelloWorld.exe"));
+            var assemblyExecute = Assembly.LoadFile(assemblyFile);
+
+            var assemblyDir = Path.GetDirectoryName(assemblyExecute.Location);
+            Directory.SetCurrentDirectory(assemblyDir);
+
+            var procInfo = new ProcessStartInfo(assemblyExecute.Location) { WorkingDirectory = assemblyDir };
+            var proc = Process.Start(procInfo);
+            Thread.Sleep(1000);
+
+            var injector = new Injector(proc.Id, typeof(AssemblyRaisingAnException.Main).Assembly);
+            var injectionResult = injector.Inject();
+            proc.Kill();
+
+            Contract.Assert(injectionResult != InjectionResult.Success);
+            Console.WriteLine("Injection not execute (as expected), error: " + injector.GetLastErrorMessage());
+        }
+
         static void Main(string[] args)
         {
             Console.WriteLine("Log files will be stored in: {0}", Path.GetFullPath(Path.Combine("..", "..", "..", "WindowsFormHelloWorld", "bin", "Debug")));
-            InjectAssemblyWithExternalFileNeeded();
             InjectDllWithDependency();
+            InjectanAssemblyRaisingAnException();
+            InjectAssemblyWithExternalFileNeeded();            
             InjectConsoleWithEntryPoint();
             InjectAssemblyWithDefaultInjectMethodSignature();
         }

@@ -41,8 +41,8 @@ namespace ES.ManagedInjector
             var response = SendData(msg);
             if (!response.IsSuccess())
             {
-                var items = response.GetData().Split('|');
-                _lastError = (InjectionResult)Int32.Parse(items[0]);
+                var items = response.GetData().Split('|');                
+                _lastError = (InjectionResult)Enum.Parse(typeof(InjectionResult), items[0]);
                 _lastErrorMessage = items[1];
             }
             return response.IsSuccess();

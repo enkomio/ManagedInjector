@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.IO.Pipes;
 using System.Reflection;
+using System.IO;
 
 namespace ES.ManagedInjector
 {
@@ -171,8 +172,18 @@ namespace ES.ManagedInjector
                 var methodToken = GetMethodToken(assembly, _methodName);
                 return (assembly.ManifestModule.ScopeName, methodToken);
             }
-            catch
+            catch (ReflectionTypeLoadException e)
             {
+                _lastErrorMessage = e.ToString();
+                foreach(var loaderEx in e.LoaderExceptions)
+                {
+                    _lastErrorMessage += Environment.NewLine + loaderEx.ToString();
+                }
+                return (null, 0);
+            }
+            catch (Exception e)
+            {
+                _lastErrorMessage = e.ToString();
                 return (null, 0);
             }
         }
@@ -184,7 +195,7 @@ namespace ES.ManagedInjector
 
             if (moduleName == null)
             {
-                _lastError = InjectionResult.InvalidAssemblyBuffer;
+                _lastError = InjectionResult.InvalidAssemblyBuffer;                
             }
             else if (methodToken == 0)
             {

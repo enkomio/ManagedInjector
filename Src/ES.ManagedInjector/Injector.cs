@@ -23,6 +23,11 @@ namespace ES.ManagedInjector
         public Injector(Int32 pid, Byte[] assemblyContent) : this(pid, assemblyContent, null)
         { }
 
+        /// <summary> Inject the given assembly into the process identified by the pid. The Assembly must
+        /// exists on the filesystem.</summary>
+        public Injector(Int32 pid, Assembly assembly) : this(pid, assembly, null)
+        { }
+
         /// <summary>Inject the given assembly bytes into the process identified by the pid. 
         /// You have to specify manually not standard dependencies since in this case the Assembly 
         /// location is not specified. The invoked method is the one specified.
@@ -33,11 +38,6 @@ namespace ES.ManagedInjector
             _assemblyContent = assemblyContent;
             _methodName = methodName;
         }
-
-        /// <summary> Inject the given assembly into the process identified by the pid. The Assembly must
-        /// exists on the filesystem.</summary>
-        public Injector(Int32 pid, Assembly assembly) : this(pid, assembly, null)
-        { }
 
         /// <summary> Inject the given assembly into the process identified by the pid. The Assembly must
         /// exists on the filesystem. The invoked method is the one specified.</summary>
@@ -53,10 +53,12 @@ namespace ES.ManagedInjector
 
             _pid = pid;
             _assembly = assembly;
-            _assemblyContent = File.ReadAllBytes(_assembly.Location); ;
+            _assemblyContent = File.ReadAllBytes(_assembly.Location);
             _methodName = methodName;
 
-            ResolveDependencies();
+            // set assembly resolve method for dependencies
+            AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += ResolveAssembly;
+            AppDomain.CurrentDomain.AssemblyResolve += ResolveAssembly;
         }
         
         /// <summary>
@@ -114,8 +116,9 @@ namespace ES.ManagedInjector
                         }
                     }
                 }
-                catch {
+                catch (Exception e) {
                     result = InjectionResult.InjectionFailed;
+                    _lastErrorMessage = e.ToString();
                 }
             }
 
@@ -173,23 +176,53 @@ namespace ES.ManagedInjector
             AddFile(filename, File.ReadAllBytes(filename));
         }
 
-        private void ResolveDependencies()
+        /// <summary>
+        /// Return a string which provides a description of the last raised error.
+        /// If no error was raised this string is empty.
+        /// </summary>
+        /// <returns>A textual description of the error</returns>
+        public String GetLastErrorMessage()
         {
+            return _lastErrorMessage;
+        }
+
+        private Assembly TryLoadAssembly(String filename)
+        {
+            Assembly assembly = null;
+            if (File.Exists(filename))
+            {
+                assembly = Assembly.LoadFile(filename);
+            }
+            return assembly;
+        }
+
+        private Assembly ResolveAssembly(Object sender, ResolveEventArgs e)
+        {
+            Assembly resolvedAssembly = null;
+
             if (_assembly != null)
             {
-                var assemblyDir = 
+                var assemblyDir =
                     String.IsNullOrWhiteSpace(_assembly.Location) ?
                     String.Empty :
                     Path.GetDirectoryName(_assembly.Location);
 
-                // change the current directory to be sure to load the referenced assemblies
-                var savedCurrentdirectory = Directory.GetCurrentDirectory();
-                if (!String.IsNullOrWhiteSpace(_assembly.Location))
+                if (!String.IsNullOrWhiteSpace(assemblyDir))
                 {
-                    Directory.SetCurrentDirectory(Path.GetDirectoryName(_assembly.Location));
+                    var fullAssemblyName = new AssemblyName(e.Name);
+                    var assemblyFile = Path.Combine(assemblyDir, fullAssemblyName.Name);
+                    resolvedAssembly = TryLoadAssembly(assemblyFile + ".dll") ?? TryLoadAssembly(assemblyFile + ".exe");
                 }
+            }
+                
+            return resolvedAssembly;
+        }
 
-                foreach(var assemblyName in _assembly.GetReferencedAssemblies())
+        private void ResolveDependencies()
+        {
+            if (_assembly != null)
+            {
+                foreach (var assemblyName in _assembly.GetReferencedAssemblies())
                 {
                     try
                     {
@@ -204,26 +237,14 @@ namespace ES.ManagedInjector
                     }
                     catch { /* ignore exception */ }
                 }
-
-                // restore current directory
-                Directory.SetCurrentDirectory(savedCurrentdirectory);
             }
-        }
-
-        /// <summary>
-        /// Return a string which provides a description of the last raised error.
-        /// If no error was raised this string is empty.
-        /// </summary>
-        /// <returns>A textual description of the error</returns>
-        public String GetLastErrorMessage()
-        {
-            return _lastErrorMessage;
         }
 
         private InjectionResult ActivateAssembly()
         {
             var client = new Client(_assemblyContent, _methodName, _dependency, _files);
             client.ActivateAssembly();
+            _lastErrorMessage = client.GetLastErrorMessage();
             return client.GetLastError();
         }
 

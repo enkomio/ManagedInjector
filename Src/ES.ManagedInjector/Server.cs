@@ -99,6 +99,7 @@ namespace ES.ManagedInjector
                 if (_assemblyBuffer == null)
                 {
                     _lastError = InjectionResult.InvalidAssemblyBuffer;
+                    _lastErrorMessage = "Assembly bytes to inject not received";
                 }
                 else
                 {
