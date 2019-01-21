@@ -37,8 +37,8 @@ let authors = [ "Enkomio" ]
 // Build dir
 let buildDir = "./build"
 
-// Package dir
-let deployDir = "./deploy"
+// Release dir
+let releaseDir = "./release"
 
 let projects = [        
     "ES.ManagedInjector.csproj"
@@ -78,8 +78,8 @@ Target.create "Clean" (fun _ ->
     Shell.cleanDir buildDir
     Directory.ensure buildDir
 
-    Shell.cleanDir deployDir
-    Directory.ensure deployDir
+    Shell.cleanDir releaseDir
+    Directory.ensure releaseDir
 )
 
 Target.create "SetAssemblyInfo" (fun _ ->
@@ -136,7 +136,7 @@ Target.create "Release" (fun _ ->
         |> List.exists(fun forbiddenFile -> Path.GetFileName(f).Equals(forbiddenFile, StringComparison.OrdinalIgnoreCase))
         |> not
     )
-    |> Zip.zip buildDir (Path.Combine(deployDir, "ManagedInjector." + releaseVersion.AssemblyVersion + ".zip"))
+    |> Zip.zip buildDir (Path.Combine(releaseDir, "ManagedInjector.v" + releaseVersion.AssemblyVersion + ".zip"))
 )
 
 Target.description "Default Build all artifacts"
