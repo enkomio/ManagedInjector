@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssemblyWithFileResourceNee
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssemblyRaisingAnException", "Examples\AssemblyRaisingAnException\AssemblyRaisingAnException.csproj", "{B8B3BDB7-6098-45FA-904D-B35916E6DBB1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssemblyWithMethodAcceptingAnArgument", "Examples\AssemblyWithMethodAcceptingAnArgument\AssemblyWithMethodAcceptingAnArgument.csproj", "{D53262D5-C6F8-494C-AD51-D5DB1F676947}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -67,6 +69,10 @@ Global
 		{B8B3BDB7-6098-45FA-904D-B35916E6DBB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B8B3BDB7-6098-45FA-904D-B35916E6DBB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B8B3BDB7-6098-45FA-904D-B35916E6DBB1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D53262D5-C6F8-494C-AD51-D5DB1F676947}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D53262D5-C6F8-494C-AD51-D5DB1F676947}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D53262D5-C6F8-494C-AD51-D5DB1F676947}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D53262D5-C6F8-494C-AD51-D5DB1F676947}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -79,6 +85,7 @@ Global
 		{533B05F2-50F0-456F-A9D9-699A2C6C0CA0} = {4E58D7CE-0C9E-4AB4-A449-D3FBDA16B732}
 		{9411B58F-2FA9-44EE-A829-F97956D254FD} = {4E58D7CE-0C9E-4AB4-A449-D3FBDA16B732}
 		{B8B3BDB7-6098-45FA-904D-B35916E6DBB1} = {4E58D7CE-0C9E-4AB4-A449-D3FBDA16B732}
+		{D53262D5-C6F8-494C-AD51-D5DB1F676947} = {4E58D7CE-0C9E-4AB4-A449-D3FBDA16B732}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {050BA54E-C98C-4AC4-8E70-A51CBA300720}

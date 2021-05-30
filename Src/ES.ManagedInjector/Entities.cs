@@ -66,6 +66,7 @@ namespace ES.ManagedInjector
         public static readonly String Assembly = "ASSEMBLY";
         public static readonly String Dependency = "DEPENDENCY";
         public static readonly String File = "FILE";
+        public static readonly String Context = "CONTEXTR";
         public static readonly String Run = "RUN";
     }
 
@@ -81,6 +82,7 @@ namespace ES.ManagedInjector
         UnableToConnectToNamedPipe = 7,
         ErrorDuringInvocation = 8,
         InvalidAssemblyDependencyBuffer = 9,
-        InvalidFileBuffer = 10
+        InvalidFileBuffer = 10,
+        ErrorInContextDeSerialization = 11
     }
 }

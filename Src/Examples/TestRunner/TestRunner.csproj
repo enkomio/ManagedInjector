@@ -65,6 +65,10 @@
       <Project>{9411b58f-2fa9-44ee-a829-f97956d254fd}</Project>
       <Name>AssemblyWithFileResourceNeeded</Name>
     </ProjectReference>
+    <ProjectReference Include="..\AssemblyWithMethodAcceptingAnArgument\AssemblyWithMethodAcceptingAnArgument.csproj">
+      <Project>{d53262d5-c6f8-494c-ad51-d5db1f676947}</Project>
+      <Name>AssemblyWithMethodAcceptingAnArgument</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ConsoleProgram\ConsoleProgram.csproj">
       <Project>{1b22270a-a1ee-4488-9ae0-c261b1c5f025}</Project>
       <Name>ConsoleProgram</Name>

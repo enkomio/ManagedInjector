@@ -60,12 +60,14 @@ namespace ES.ManagedInjector
             AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += ResolveAssembly;
             AppDomain.CurrentDomain.AssemblyResolve += ResolveAssembly;
         }
-        
+
         /// <summary>
         /// Execute the injection of the specified assembly
         /// </summary>
+        /// <param name="context">This optional parameter is passed to the Inject method. 
+        /// The parameter value is serialized with a BinaryFormatter (so be sure that it can be serialized)</param>
         /// <returns></returns>
-        public InjectionResult Inject()
+        public InjectionResult Inject(Object context = null)
         {
             var result = InjectionResult.UnknownError;
             ResolveDependencies();
@@ -97,7 +99,7 @@ namespace ES.ManagedInjector
                                 ActivateHook();                                
                                 if (VerifyInjection())
                                 {
-                                    result = ActivateAssembly();
+                                    result = ActivateAssembly(context);
                                     break;
                                 }
                                 else
@@ -240,10 +242,10 @@ namespace ES.ManagedInjector
             }
         }
 
-        private InjectionResult ActivateAssembly()
+        private InjectionResult ActivateAssembly(Object context)
         {
             var client = new Client(_assemblyContent, _methodName, _dependency, _files);
-            client.ActivateAssembly();
+            client.ActivateAssembly(context);
             _lastErrorMessage = client.GetLastErrorMessage();
             return client.GetLastError();
         }

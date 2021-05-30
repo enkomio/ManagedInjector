@@ -5,6 +5,7 @@ using System.IO.Pipes;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,17 +14,18 @@ namespace ES.ManagedInjector
     internal class Server
     {
         private readonly NamedPipeServerStream _server = new NamedPipeServerStream(Constants.NamedPipeCode.ToString("X"), PipeDirection.InOut);
-        private readonly PipeChanell _pipeChanell = null;
+        private readonly PipeChanel _pipeChanell = null;
         private readonly Dictionary<String, Assembly> _dependencies = new Dictionary<String, Assembly>();
 
         private InjectionResult _lastError = InjectionResult.Success;
         private String _lastErrorMessage = String.Empty;
         private Int32 _metadataToken = 0;
         private Byte[] _assemblyBuffer = null;
+        private Object _context = null;
 
         public Server()
         {
-            _pipeChanell = new PipeChanell(_server);
+            _pipeChanell = new PipeChanel(_server);
             AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += ResolveAssembly;
             AppDomain.CurrentDomain.AssemblyResolve += ResolveAssembly;
         }
@@ -94,6 +96,30 @@ namespace ES.ManagedInjector
                     _lastErrorMessage = e.ToString();
                 }
             }
+            else if (msgType.Equals(Constants.Context, StringComparison.OrdinalIgnoreCase))
+            {
+                try
+                {
+                    var dataString = msg.GetData();
+                    var data = Convert.FromBase64String(dataString);
+                    var formatter = new BinaryFormatter();
+                    using(var memStream = new MemoryStream(data))
+                    {
+                        _context = formatter.Deserialize(memStream);
+                    }                    
+                }
+                catch (SerializationException e)
+                {
+                    _lastError = InjectionResult.ErrorInContextDeSerialization;
+                    _lastErrorMessage = e.ToString();
+                }
+                catch (Exception e)
+                {
+                    _lastError = InjectionResult.UnknownError;
+                    _lastErrorMessage = e.ToString();                    
+                }
+
+            }
             else if (msgType.Equals(Constants.Run, StringComparison.OrdinalIgnoreCase))
             {
                 if (_assemblyBuffer == null)
@@ -103,7 +129,7 @@ namespace ES.ManagedInjector
                 }
                 else
                 {
-                    ActivateDll();
+                    ActivateDll(_context);
                 }
                 
                 exit = true;
@@ -149,14 +175,29 @@ namespace ES.ManagedInjector
 
         private Object[] CreateArgumentArray(ParameterInfo[] parameters)
         {
-            return parameters.Select(CreateType).ToArray();
+           return parameters.Select(CreateType).ToArray();
+        }
+
+        private Object[] CreateInjectMethodArguments(ParameterInfo[] parameters, Object context)
+        {
+            Object[] arguments = null;
+            if (context == null)
+            {
+                arguments = CreateArgumentArray(parameters);
+            }
+            else if (parameters.Length == 1)
+            {
+                arguments = new[] { context };
+            }
+
+            return arguments;
         }
         
-        private void InvokeMethod(MethodBase method)
+        private void InvokeMethod(MethodBase method, Object context)
         {
             try
             {
-                var arguments = CreateArgumentArray(method.GetParameters());
+                var arguments = CreateInjectMethodArguments(method.GetParameters(), context);
                 Object thisObj = null;
 
                 // check if I have to create an instance to invoke the method
@@ -202,7 +243,7 @@ namespace ES.ManagedInjector
             return methodToInvoke;
         }
 
-        private void ActivateDll()
+        private void ActivateDll(Object context)
         {
             try
             {
@@ -211,7 +252,7 @@ namespace ES.ManagedInjector
 
                 if (methodToInvoke != null)
                 {
-                    InvokeMethod(methodToInvoke);
+                    InvokeMethod(methodToInvoke, context);
                 }
                 else
                 {

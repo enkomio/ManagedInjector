@@ -1,4 +1,4 @@
 @echo off
 cls
 
-".\Src\fake\fake.exe" run ".\Src\build.fsx" %*
+dotnet ".\Src\fake\fake.dll" run ".\Src\build.fsx" %*
