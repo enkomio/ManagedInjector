@@ -17,6 +17,8 @@ If the above pre-conditions are satisfied you can inject an assembly and invoke 
 * You can inject an executable that defines an _EntryPoint_ method to execute (like a _Console_ project)
 * You can define a method with the following signatue: _<public|private> static void Inject()_
 
+This library is also used by <a href="https://github.com/enkomio/shed">Shed</a> to inject a DLL in a remote process. You can see a video <a href="https://raw.githubusercontent.com/enkomio/media/master/Shed/Injection.gif">here</a>.
+
 For practical examples see the <a href="https://github.com/enkomio/ManagedInjector/blob/master/Src/Examples/TestRunner/Program.cs">TestRunner project</a>.
 
 ### Adding dependencies
