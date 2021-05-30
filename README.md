@@ -27,6 +27,9 @@ If the injected assembly has any dependencies on not standard .NET assemblies, y
 ### Adding external files
 If the injected assembly needs to load some external file in order to work correctly (like a configuration file) you can specify them with the ``AddFile`` method. This method will copy the specified file in the working directory of the injected process.
 
+### Passing an argument to the Inject method
+In some case is necessary to pass an argument to the method called in the injected assembly. This is achieved by passing a ``context`` object to the ``Inject`` method. Then, the ``Injected`` method needs to cast the ``context`` object to the real type (see ``AssemblyWithMethodAcceptingAnArgument`` for an example). The framework uses the ``BinaryFormatter`` class to serialize the ``context`` object, so be sure that the specified object can be serialized.
+
 ### Example
 
 Let's consider the following code:
