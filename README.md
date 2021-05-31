@@ -54,6 +54,7 @@ in order to inject the Assembly generated from the above code it is enough to us
     var injector = new Injector(pid, Assembly.LoadFile("AssemblyToInject.dll"));
     var injectionResult = injector.Inject();
 
+For more examples have a look at the <a href="https://github.com/enkomio/ManagedInjector/tree/master/Src/Examples">example folder</a>.
 
 ## Build
 _ManagedInjector_ is currently developed by using VisualStudio 2017 Community Edition (be sure to have the latest version installed). To build the source code be sure you have to:
